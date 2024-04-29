@@ -46,5 +46,7 @@ return [
     'detail'           => 'Detail',
     'invoices'          => 'Invoices',
     'invoice'          => 'Invoice',
-    'invoice_items'    => 'Invoice Items'
+    'invoice_items'    => 'Invoice Items',
+    'create'            => 'Create',
+    'customer'          => 'Customer'
 ];

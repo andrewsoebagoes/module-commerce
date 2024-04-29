@@ -45,4 +45,4 @@ Page::pushFoot("<script src='".asset('assets/crud/js/crud.js')."'></script>");
 
 Page::pushHook();
 
-return view('crud/views/index', compact('fields', 'tableName', 'success_msg', 'error_msg', 'crudRepository'));
+return view('commerce/views/customer', compact('fields', 'tableName', 'success_msg', 'error_msg', 'crudRepository'));

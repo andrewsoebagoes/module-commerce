@@ -4,23 +4,14 @@ table td img {
     max-width:150px;
 }
 </style>
-<div class="page-title-box">
-    <div class="page-title-right">
-        <ol class="breadcrumb m-0">
-            <li class="breadcrumb-item"><a href="http://localhost:8080/">Home</a></li>
-            <li class="breadcrumb-item"><a href="http://localhost:8080/commerce/customer">Customer</a></li>
-            <li class="breadcrumb-item"><a href="javascript:void(0)">Index</a></li>
-        </ol>
-    </div>
-    <h4 class="page-title">Customer</h4>
-</div>
+
 <div class="card">
     <div class="card-header d-flex flex-grow-1 align-items-center">
         <p class="h4 m-0">Customer</p>
         <div class="right-button ms-auto">
-            <?= $crudRepository->additionalButtonBeforeCreate() ?>
-            <?php if(is_allowed(parsePath(routeTo('crud/create', ['table'=>$tableName])), auth()->id)): ?>
-            <a href="<?= crudRoute('crud/create', $tableName) ?>" class="btn btn-success btn-sm">
+        <?= $crudRepository->additionalButtonBeforeCreate() ?>
+            <?php if(is_allowed(parsePath(routeTo('commerce/create-customer')), auth()->id)): ?>
+            <a href="<?= routeTo('commerce/create-customer') ?>" class="btn btn-success btn-sm">
                 <i class="fa-solid fa-plus"></i> <?= __('crud.label.create') ?>
             </a>
             <?php endif ?>
