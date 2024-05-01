@@ -31,8 +31,8 @@ $(function () {
   $("form[name='transaction_form']").validate({
     rules: {
       diskon: "required",
-      bayar: "required",
-      user_id:"required"
+      // bayar: "required",
+      // user_id:"required"
     },
     errorPlacement: function (error, element) {
       var name = element.attr("name");

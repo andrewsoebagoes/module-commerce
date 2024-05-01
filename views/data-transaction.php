@@ -9,10 +9,10 @@ table td img {
         <p class="h4 m-0"><?php get_title() ?></p>
         <div class="right-button ms-auto">
             <?= $crudRepository->additionalButtonBeforeCreate() ?>
-            <?php if(is_allowed(parsePath(routeTo('crud/create', ['table'=>$tableName])), auth()->id)): ?>
             <a href="<?= crudRoute('commerce/transaction', []) ?>" class="btn btn-success btn-sm">
                 <i class="fa-solid fa-plus"></i> <?= __('crud.label.create') ?>
             </a>
+            <?php if(is_allowed(parsePath(routeTo('commerce/transaction')), auth()->id)): ?>
             <?php endif ?>
             <?= $crudRepository->additionalButtonAfterCreate() ?>
         </div>

@@ -137,11 +137,11 @@
     'invoice_media' => [
         'invoice_id' => [
             'label' => __('commerce.label.invoice'),
-            'type'  => 'options-obj:invoices,id,name'
+            'type'  => 'options-obj:invoices,id,code'
         ],
         'media_id' => [
             'label' => __('commerce.label.media'),
-            'type'  => 'options-obj:storage_media,id,name'
+            'type'  => 'options-obj:media,id,name'
         ],
         'status' => [
             'label' => __('commerce.label.status'),

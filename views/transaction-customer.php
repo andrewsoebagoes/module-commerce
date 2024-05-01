@@ -150,7 +150,7 @@ get_header() ?>
                                                     <p class="m-0 text-white">Kode Transaksi</p>
                                                     <p class="m-0 text-white">T<?= date('dmYHis') ?></p>
                                                     <input type="text" name="kode_transaksi" value="T<?= date('dmYHis') ?>" hidden="">
-                                                    <input type="hidden" name="customer_user_id" value="<?= auth()->id ?>">
+                                                    <input type="hidden" name="user_id" value="<?= auth()->id ?>">
                                                 </div>
                                             </div>
 
@@ -223,90 +223,10 @@ get_header() ?>
                                             <td hidden=""><input type="text" class="nilai-total2-td" name="total" value="0"></td>
                                         </tr>
                                     </table>
+
+                                    <button class="btn btn-bayar" type="button">Checkout</button>
                                 </div>
-                                <?php if (get_role(auth()->id)->role_id != env('CUSTOMER_ROLE_ID')) : ?>
-                                <div class="form-group mb-2 mt-2">
-                                    <label for="exampleInputPassword1"></label>
-                                    <select class="form-control select2 is-invalid" name="user_id" id="user_id" required>
-                                        <option value="">Pilih Customer</option>
-                                        <?php foreach ($customer as $cus) : ?>
-                                            <option value="<?= $cus->id; ?>"><?= $cus->name; ?></option>
-                                        <?php endforeach ?>
-                                        <option value="0">Masukan nama customer baru</option>
-                                    </select>
-                                </div>
-                                <?php endif ?>
-                                <div class="col-12 mt-2">
-                                    <table class="table-payment-3">
-                                        <?php if (get_role(auth()->id)->role_id != env('CUSTOMER_ROLE_ID')) : ?>
-                                        <tr>
-                                            <td>
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend">
-                                                        <div class="input-group-text">Rp.</div>
-                                                    </div>
-                                                    <input type="text" class="form-control number-input input-notzero bayar-input" name="bayar" placeholder="Masukkan nominal bayar">
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr class="nominal-error" hidden="">
-                                            <td class="text-danger nominal-min">Nominal bayar kurang</td>
-                                        </tr>
-                                        
-                                            <tr>
-                                                <td class="text-right">
-                                                    <button class="btn btn-bayar" type="button">Bayar</button>
-                                                </td>
-                                            </tr>
-                                        <?php else : ?>
 
-                                    <div class="mb-3 mt-3">
-                                        <label for="provinsiTujuan" class="form-label">Provinsi Tujuan</label>
-                                        <select class="form-select" id="provinsiTujuan" name="provinsiTujuan" onchange="getKabupatenTujuan(this.value)">
-                                        </select>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="kabupatenTujuan" class="form-label">Kabupaten/Kota Tujuan</label>
-                                        <select class="form-select" id="kabupatenTujuan" name="kabupatenTujuan">
-                                        </select>
-                                    </div>
-                                    
-                                    <div class="mb-3">
-                                        <label for="address" class="form-label">Alamat Lengkap</label>
-                                        <textarea type="text" id="address" class="form-control" name="address"></textarea>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="ekspedisi" class="form-label">Ekspedisi</label>
-                                        <select name="ekspedisi" id="ekspedisi" class="form-control" onchange="cekOngkir(this.value)">
-                                            <option value="">--Pilih ekspedisi--</option>
-                                            <option value="pos">Pos Indonesia</option>
-                                            <option value="tiki">TIKI</option>
-                                            <option value="jne">JNE</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="ongkir" class="form-label">Pilih Ongkir</label>
-                                        <select class="form-select" id="ongkir" name="ongkir">
-
-                                        </select>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label for="notes" class="form-label">Catatan</label>
-                                        <textarea type="text" id="notes" class="form-control" name="notes"></textarea>
-                                    </div>
-                                            <tr>
-                                                <td class="text-right">
-                                                    <button class="btn btn-bayar" type="button">Checkout</button>
-                                                </td>
-                                            </tr>
-                                        <?php endif; ?>
-
-                                    </table>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -338,7 +258,6 @@ get_header() ?>
     }
 
     // Fungsi untuk mendapatkan kabupaten tujuan berdasarkan provinsi
-    
     function getKabupatenTujuan(idProvinsi) {
         $.ajax({
             url: "<?php echo routeTo('commerce/getKabupaten') ?>" + "?id_provinsi=" + idProvinsi,
@@ -379,27 +298,6 @@ get_header() ?>
 </script>
 
 
-
-<script>
-    $(document).ready(function() {
-        $('#user_id').on('change', function() {
-            if ($(this).val() === '0') {
-                if ($('#newCustomerInput').length === 0) {
-                    $('<input>', {
-                        type: 'text',
-                        name: 'new_customer_name',
-                        id: 'newCustomerInput',
-                        class: 'form-control mt-2',
-                        placeholder: 'Masukkan nama customer baru'
-                    }).insertAfter(this);
-                }
-            } else {
-                $('#newCustomerInput').remove();
-            }
-        });
-    });
-</script>
-
 <script type="text/javascript">
     $(document).on('click', '.btn-pilih', function(e) {
         e.preventDefault();
@@ -431,55 +329,9 @@ get_header() ?>
 
     $(document).on('click', '.btn-bayar', function() {
         var total = parseInt($('.nilai-total2-td').val());
-        var bayar = parseInt($('.bayar-input').val());
+        // var bayar = parseInt($('.bayar-input').val());
         var check_barang = parseInt($('.jumlah_barang_text').length);
-        var role_id = <?= get_role(auth()->id)->role_id ?>;
-        var customer = <?= env('CUSTOMER_ROLE_ID') ?>;
-        if (role_id  !=  customer) {
-            if (bayar >= total) {
-                $('.nominal-error').prop('hidden', true);
-                if (check_barang != 0) {
-                    if ($('.diskon-input').attr('hidden') != 'hidden') {
-                        $('.diskon-input').addClass('is-invalid');
-                    } else {
-                        $('#transaction_form').submit();
-                    }
-                } else {
-                    swal(
-                        "",
-                        "Pesanan Kosong",
-                        "error"
-                    );
-                }
-            } else {
-                if (isNaN(bayar)) {
-                    $('.bayar-input').valid();
-                } else {
-                    $('.nominal-error').prop('hidden', false);
-                }
-
-                if (check_barang == 0) {
-                    swal(
-                        "",
-                        "Pesanan Kosong",
-                        "error"
-                    );
-                }
-            }
-        }else{
-            if (check_barang != 0) {
-                    if ($('.diskon-input').attr('hidden') != 'hidden') {
-                        $('.diskon-input').addClass('is-invalid');
-                    } else {
-                        $('#transaction_form').submit();
-                    }
-                } else {
-                    swal(
-                        "",
-                        "Pesanan Kosong",
-                        "error"
-                    );
-                }
-        }
+        $('#transaction_form').submit();
+       
     });
 </script>
