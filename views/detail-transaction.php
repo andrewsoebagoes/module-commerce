@@ -126,17 +126,7 @@
                     </div>
                 </div>
 
-                <div class="form-group row mt-3 col-4">
-                    <form action="" method="post" enctype="multipart/form-data">
-                        <?= csrf_field() ?>
-                        <label for="media_id" class="form-label">Upload Bukti Pembayaran</label>
-
-                        <input type="file" name="media_id" id="" class="form-control">
-
-                        <button type="submit" class="btn btn-outline-primary mt-2">Simpan</button>
-                    </form>
-
-                </div>
+            
             </div>
 
         <?php endif; ?>

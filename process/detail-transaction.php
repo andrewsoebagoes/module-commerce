@@ -8,6 +8,8 @@ use Core\Request;
 use Modules\Crud\Libraries\Repositories\CrudRepository;
 
 // init table fields
+$invoice_id     = $_GET['id'];
+$_GET['filter'] = ['invoice_id' => $invoice_id];
 $tableName      = 'invoice_items';
 $table          = tableFields($tableName);
 $fields         = $table->getFields();
@@ -23,7 +25,7 @@ if (isset($_GET['draw'])) {
     return $crudRepository->dataTable($fields);
 }
 
-$invoice_id = $_GET['filter']['invoice_id'];
+
 
 $db = new Database;
 $db->query  = "SELECT
@@ -43,22 +45,27 @@ shippings.courier,
 shippings.address,
 shippings.notes
 FROM invoices
-JOIN invoice_items ON invoices.id = invoice_items.invoice_id
-JOIN shippings ON invoices.id = shippings.invoice_id
-JOIN users ON invoices.user_id = users.id
+LEFT JOIN invoice_items ON invoices.id = invoice_items.invoice_id
+LEFT JOIN shippings ON invoices.id = shippings.invoice_id
+LEFT JOIN users ON invoices.user_id = users.id
 WHERE invoices.id = $invoice_id";
 
 
 $invoice = $db->exec('single');
 
+// echo '<pre>';
+// print_r($invoice);
+// die();
+
+
 if (Request::isMethod('POST')) {
 
     extract($_POST);
     extract($_FILES);
+    // echo '<pre>';
+    // print_r($_POST);
+    // die();
 
-    echo '<pre>';
-    print_r($_POST);
-    die();
 
     $db->query = ("UPDATE invoices
                     SET invoices.status = '$status'

@@ -156,7 +156,7 @@
         ],
         'item_id' => [
             'label' => __('commerce.label.item'),
-            'type'  => 'options-obj:inventory_items,id,name'
+            'type'  => 'text'
         ],
         'item_type' => [
             'label' => __('commerce.label.item_type'),

@@ -206,14 +206,14 @@ get_header() ?>
                                             <td class="text- nilai-subtotal1-td">Rp. 0</td>
                                             <td hidden=""><input type="text" class="nilai-subtotal2-td" name="subtotal" value="0"></td>
                                         </tr>
-                                        <tr>
+                                        <tr style="display: none;">
                                             <td class="text-left">
                                                 <span class="diskon-td">Diskon</span>
                                                 <a href="#" class="ubah-diskon-td">Ubah diskon</a>
                                                 <a href="#" class="simpan-diskon-td" hidden="">Simpan</a>
                                             </td>
                                             <td class="text-right d-flex justify-content-end align-items-center pt-2">
-                                                <input type="number" class="form-control diskon-input mr-2" min="0" max="100" name="diskon" value="0" hidden="">
+                                                <input type="hidden" class="form-control diskon-input mr-2" min="0" max="100" name="diskon" value="0" hidden="">
                                                 <span class="nilai-diskon-td mr-1">0</span>
                                                 <span>%</span>
                                             </td>
@@ -298,6 +298,14 @@ get_header() ?>
                                         <label for="notes" class="form-label">Catatan</label>
                                         <textarea type="text" id="notes" class="form-control" name="notes"></textarea>
                                     </div>
+
+                                    <div class="mb-3">
+                                        <label for="address" class="form-label">
+                                            <input type="checkbox" value="1" id="preorder" class="" name="preorder"> Pre Order
+                                        </label>
+                                    </div>
+
+                                    
                                             <tr>
                                                 <td class="text-right">
                                                     <button class="btn btn-bayar" type="button">Checkout</button>
