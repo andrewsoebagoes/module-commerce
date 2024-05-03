@@ -4,10 +4,11 @@ $apiKey = 'c7564e55cb13c4cb02583cbce83a0753';
 
 // extract($_POST);
 // Ambil data POST dari formulir
-$ekspedisi  = $_POST['courier'];
-$distrik    = explode('-', $_POST['destination']);
-$berat      = 1000;
-$origin     = env('CODE_KABUPATEN_ASAL'); 
+$ekspedisi      = $_POST['courier'];
+$jumlahBarang   = $_POST['jumlah_barang'];
+$distrik        = explode('-', $_POST['destination']);
+$berat          = 1000;
+$origin         = env('CODE_KABUPATEN_ASAL'); 
 
 $curl = curl_init();
 curl_setopt_array($curl, array(

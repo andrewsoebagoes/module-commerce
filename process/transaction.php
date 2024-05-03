@@ -41,9 +41,9 @@ if (Request::isMethod('POST')) {
         $user_id = $customer_user_id;
     }
 
-    // echo '<pre>';
-    // print_r($_POST);
-    // die();
+    echo '<pre>';
+    print_r($_POST);
+    die();
 
     if ($user_id == 0) {
         $username = strtolower($new_customer_name);
@@ -106,52 +106,12 @@ if (Request::isMethod('POST')) {
             WHERE products.item_id = {$id_product[$i]}";
 
         $product = $db->exec('single');
-
-        $db->query  = "SELECT
-                            discounts.id AS discount_id,
-                            discounts.code AS discount_code,
-                            discounts.name AS discount_name,
-                            discounts.discount_type,
-                            discounts.discount_value,
-                            discounts.record_type,
-                            discounts.status AS discount_status,
-                            product_discount.status AS product_discount_status,
-                            discount_applicables.user_id,
-                            users.id AS user_id
-                        FROM
-                            product_discount
-                            LEFT JOIN discounts ON product_discount.discount_id = discounts.id
-                            LEFT JOIN discount_applicables ON discounts.id = discount_applicables.discount_id
-                            LEFT JOIN users ON discount_applicables.user_id = users.id
-                        WHERE
-                            product_discount.product_id = {$id_product[$i]}
-                            AND product_discount.status = 'PUBLISH'
-                            AND discounts.status = 'Aktif'
-                            AND discount_applicables.user_id = $user_id;
-                        ";
-
-        $discount = $db->exec('single');
-        // echo '<pre>';
-        // print_r($discount);
-        // die();
-
-        $discount_value = 0;
-
-        if ($discount && $discount->product_discount_status == 'PUBLISH') {
-            $discount_value += $discount->discount_value;
-        }
-        
-        if ($discount && $discount->user_id == $user_id) {
-            $discount_value += $discount->discount_value;
-        }
-
-        $total_price = $total_barang[$i] - $discount_value;
         
         $invoice_items = $db->insert('invoice_items', [
             'invoice_id'            => $lastInvoiceId,
             'item_id'               => $id_product[$i],
             'item_type'             => 'products',
-            'discount_id'           => $discount ? $discount->discount_id : 0,
+            'discount_id'           => 0,
             'item_snapshot'         => json_encode($product),
             'discount_snapshot'     => json_encode($discount),
             'quantity'              => $jumlah_barang[$i],

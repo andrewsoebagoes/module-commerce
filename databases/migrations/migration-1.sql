@@ -73,7 +73,7 @@ CREATE TABLE invoice_items(
     item_price INT NOT NULL,
     discount_price INT NOT NULL,
     total_price INT NOT NULL,
-    CONSTRAINT fk_invoice_items_invoice_id FOREIGN KEY (invoce_id) REFERENCES invoices(id) ON DELETE CASCADE,
+    CONSTRAINT fk_invoice_items_invoice_id FOREIGN KEY (invoice_id) REFERENCES invoices(id) ON DELETE CASCADE,
     CONSTRAINT fk_invoice_item_id FOREIGN KEY (item_id) REFERENCES inventory_items(id) ON DELETE CASCADE
 );
 

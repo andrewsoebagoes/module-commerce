@@ -67,72 +67,68 @@ get_header() ?>
     </div>
     <div class="card-body">
         <h4 class="page-title">Daftar Produk</h4>
-        <div class="row mb-2">
-            <div class="col-12">
-                <div class="form-group">
-                    <input type="text" class="form-control" name="search" placeholder="Cari barang">
-                </div>
-            </div>
-        </div>
-        <div class="product-list-container">
-
-
-            <div class=" product-list row mb-3">
-                <?php foreach ($products as $product) : ?>
-
-                    <div class="col-md-4 pb-3">
-
-
-                        <div class="produk list-group-item justify-content-between align-items-center active-list">
-                            <div class="col-md-6 col-sm-4 text-group">
-                                <p class="m-0">Rp. <?= number_format($product->price) ?></p>
-                                <p class="m-0 txt-light"><?= $product->product_name ?></p>
-                            </div>
-
-                            <div class="col-md-3 col-sm-4 d-flex align-items-center">
-                                <span class=""><i class="mdi mdi-cube-outline"></i></span>
-                                <p class="m-0"><?= $product->sku ?></p>
-                            </div>
-
-                            <a href="#" class="col-md-1 col-sm-12 btn btn-icons btn-rounded btn-outline-primary font-weight-bold btn-pilih" id="<?= $product->id_product; ?>" role="button"><i class="mdi mdi-chevron-right"></i></a>
-                        </div>
-                    </div>
-                <?php endforeach ?>
-
-            </div>
-        </div>
-        <?php if ($success_msg) : ?>
-            <div class="alert alert-success"><?= $success_msg ?></div>
-        <?php endif ?>
-        <?php if ($error_msg) : ?>
-            <div class="alert alert-danger"><?= $error_msg ?></div>
-        <?php endif ?>
-        <div class="row page-title-header">
-            <div class="col-12">
-                <div class="page-header d-flex justify-content-start align-items-center">
-                    <h4 class="page-title">Transaksi Barang</h4>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-12">
-                <div class="alert alert-danger kode_barang_error" hidden="" role="alert">
-                    <i class="mdi mdi-information-outline"></i> Kode barang tidak tersedia
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-12">
-                <div class="alert alert-danger kode_barang_double" hidden="" role="alert">
-                    <i class="mdi mdi-information-outline"></i> Barang sudah ditambahkan
-                </div>
-            </div>
-        </div>
 
         <form method="POST" name="transaction_form" id="transaction_form" action="">
             <?= csrf_field() ?>
+
+            <?php if (get_role(auth()->id)->role_id != env('CUSTOMER_ROLE_ID')) : ?>
+                <div class="form-group col-md-5 mb-2 mt-2">
+                    <label for="exampleInputPassword1"></label>
+                    <select class="form-control select2 is-invalid" name="user_id" id="user_id" onchange="cekDiscount(this.value)" required>
+                        <option value="">Pilih Customer</option>
+                        <?php foreach ($customer as $cus) : ?>
+                            <option value="<?= $cus->id; ?>"><?= $cus->name; ?></option>
+                        <?php endforeach ?>
+                        <option value="0">Masukan nama customer baru</option>
+                    </select>
+                </div>
+            <?php endif ?>
+
+            <div class="row mb-2">
+                <div class="col-12">
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="search" placeholder="Cari barang">
+                    </div>
+                </div>
+            </div>
+            <div class="product-list-container">
+
+                <div class="product-list row mb-3" id="product">
+                   
+
+                </div>
+            </div>
+            <?php if ($success_msg) : ?>
+                <div class="alert alert-success"><?= $success_msg ?></div>
+            <?php endif ?>
+            <?php if ($error_msg) : ?>
+                <div class="alert alert-danger"><?= $error_msg ?></div>
+            <?php endif ?>
+            <div class="row page-title-header">
+                <div class="col-12">
+                    <div class="page-header d-flex justify-content-start align-items-center">
+                        <h4 class="page-title">Transaksi Barang</h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="alert alert-danger kode_barang_error" hidden="" role="alert">
+                        <i class="mdi mdi-information-outline"></i> Kode barang tidak tersedia
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="alert alert-danger kode_barang_double" hidden="" role="alert">
+                        <i class="mdi mdi-information-outline"></i> Barang sudah ditambahkan
+                    </div>
+                </div>
+            </div>
+
+
 
             <div class="row">
                 <div class="col-lg-8 col-md-8 col-sm-12 mb-4">
@@ -224,35 +220,24 @@ get_header() ?>
                                         </tr>
                                     </table>
                                 </div>
-                                <?php if (get_role(auth()->id)->role_id != env('CUSTOMER_ROLE_ID')) : ?>
-                                <div class="form-group mb-2 mt-2">
-                                    <label for="exampleInputPassword1"></label>
-                                    <select class="form-control select2 is-invalid" name="user_id" id="user_id" required>
-                                        <option value="">Pilih Customer</option>
-                                        <?php foreach ($customer as $cus) : ?>
-                                            <option value="<?= $cus->id; ?>"><?= $cus->name; ?></option>
-                                        <?php endforeach ?>
-                                        <option value="0">Masukan nama customer baru</option>
-                                    </select>
-                                </div>
-                                <?php endif ?>
+
                                 <div class="col-12 mt-2">
                                     <table class="table-payment-3">
                                         <?php if (get_role(auth()->id)->role_id != env('CUSTOMER_ROLE_ID')) : ?>
-                                        <tr>
-                                            <td>
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend">
-                                                        <div class="input-group-text">Rp.</div>
+                                            <tr>
+                                                <td>
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <div class="input-group-text">Rp.</div>
+                                                        </div>
+                                                        <input type="text" class="form-control number-input input-notzero bayar-input" name="bayar" placeholder="Masukkan nominal bayar">
                                                     </div>
-                                                    <input type="text" class="form-control number-input input-notzero bayar-input" name="bayar" placeholder="Masukkan nominal bayar">
-                                                </div>
-                                            </td>
-                                        </tr>
-                                        <tr class="nominal-error" hidden="">
-                                            <td class="text-danger nominal-min">Nominal bayar kurang</td>
-                                        </tr>
-                                        
+                                                </td>
+                                            </tr>
+                                            <tr class="nominal-error" hidden="">
+                                                <td class="text-danger nominal-min">Nominal bayar kurang</td>
+                                            </tr>
+
                                             <tr>
                                                 <td class="text-right">
                                                     <button class="btn btn-bayar" type="button">Bayar</button>
@@ -260,52 +245,52 @@ get_header() ?>
                                             </tr>
                                         <?php else : ?>
 
-                                    <div class="mb-3 mt-3">
-                                        <label for="provinsiTujuan" class="form-label">Provinsi Tujuan</label>
-                                        <select class="form-select" id="provinsiTujuan" name="provinsiTujuan" onchange="getKabupatenTujuan(this.value)">
-                                        </select>
-                                    </div>
+                                            <div class="mb-3 mt-3">
+                                                <label for="provinsiTujuan" class="form-label">Provinsi Tujuan</label>
+                                                <select class="form-select" id="provinsiTujuan" name="provinsiTujuan" onchange="getKabupatenTujuan(this.value)">
+                                                </select>
+                                            </div>
 
-                                    <div class="mb-3">
-                                        <label for="kabupatenTujuan" class="form-label">Kabupaten/Kota Tujuan</label>
-                                        <select class="form-select" id="kabupatenTujuan" name="kabupatenTujuan">
-                                        </select>
-                                    </div>
-                                    
-                                    <div class="mb-3">
-                                        <label for="address" class="form-label">Alamat Lengkap</label>
-                                        <textarea type="text" id="address" class="form-control" name="address"></textarea>
-                                    </div>
+                                            <div class="mb-3">
+                                                <label for="kabupatenTujuan" class="form-label">Kabupaten/Kota Tujuan</label>
+                                                <select class="form-select" id="kabupatenTujuan" name="kabupatenTujuan">
+                                                </select>
+                                            </div>
 
-                                    <div class="mb-3">
-                                        <label for="ekspedisi" class="form-label">Ekspedisi</label>
-                                        <select name="ekspedisi" id="ekspedisi" class="form-control" onchange="cekOngkir(this.value)">
-                                            <option value="">--Pilih ekspedisi--</option>
-                                            <option value="pos">Pos Indonesia</option>
-                                            <option value="tiki">TIKI</option>
-                                            <option value="jne">JNE</option>
-                                        </select>
-                                    </div>
+                                            <div class="mb-3">
+                                                <label for="address" class="form-label">Alamat Lengkap</label>
+                                                <textarea type="text" id="address" class="form-control" name="address"></textarea>
+                                            </div>
 
-                                    <div class="mb-3">
-                                        <label for="ongkir" class="form-label">Pilih Ongkir</label>
-                                        <select class="form-select" id="ongkir" name="ongkir">
+                                            <div class="mb-3">
+                                                <label for="ekspedisi" class="form-label">Ekspedisi</label>
+                                                <select name="ekspedisi" id="ekspedisi" class="form-control" onchange="cekOngkir(this.value)">
+                                                    <option value="">--Pilih ekspedisi--</option>
+                                                    <option value="pos">Pos Indonesia</option>
+                                                    <option value="tiki">TIKI</option>
+                                                    <option value="jne">JNE</option>
+                                                </select>
+                                            </div>
 
-                                        </select>
-                                    </div>
+                                            <div class="mb-3">
+                                                <label for="ongkir" class="form-label">Pilih Ongkir</label>
+                                                <select class="form-select" id="ongkir" name="ongkir">
 
-                                    <div class="mb-3">
-                                        <label for="notes" class="form-label">Catatan</label>
-                                        <textarea type="text" id="notes" class="form-control" name="notes"></textarea>
-                                    </div>
+                                                </select>
+                                            </div>
 
-                                    <div class="mb-3">
-                                        <label for="address" class="form-label">
-                                            <input type="checkbox" value="1" id="preorder" class="" name="preorder"> Pre Order
-                                        </label>
-                                    </div>
+                                            <div class="mb-3">
+                                                <label for="notes" class="form-label">Catatan</label>
+                                                <textarea type="text" id="notes" class="form-control" name="notes"></textarea>
+                                            </div>
 
-                                    
+                                            <div class="mb-3">
+                                                <label for="address" class="form-label">
+                                                    <input type="checkbox" value="1" id="preorder" class="" name="preorder"> Pre Order
+                                                </label>
+                                            </div>
+
+
                                             <tr>
                                                 <td class="text-right">
                                                     <button class="btn btn-bayar" type="button">Checkout</button>
@@ -331,7 +316,6 @@ get_header() ?>
 <script>
     getProvinsiTujuan();
 
-    // Fungsi untuk mendapatkan provinsi tujuan
     function getProvinsiTujuan() {
         $.ajax({
             url: "<?php echo routeTo('commerce/getProvinsi') ?>",
@@ -345,8 +329,6 @@ get_header() ?>
         });
     }
 
-    // Fungsi untuk mendapatkan kabupaten tujuan berdasarkan provinsi
-    
     function getKabupatenTujuan(idProvinsi) {
         $.ajax({
             url: "<?php echo routeTo('commerce/getKabupaten') ?>" + "?id_provinsi=" + idProvinsi,
@@ -363,7 +345,7 @@ get_header() ?>
     // Fungsi untuk mengecek ongkos kirim
     function cekOngkir() {
         const kabupatenTujuan   = $('#kabupatenTujuan').val();
-        const beratBarang       = $('#beratBarang').val();
+        const beratBarang       = '<?=$_POST['jumlah_barang']?>';
         const ekspedisi         = $('#ekspedisi').val();
 
         $.ajax({
@@ -381,7 +363,7 @@ get_header() ?>
             error: function(xhr, status, error) {
                 console.error(`Error: ${error}`);
             }
-            
+
         });
     }
 </script>
@@ -389,6 +371,28 @@ get_header() ?>
 
 
 <script>
+    cekDiscount();
+     function cekDiscount() {
+        const user_id = $('#user_id').val();
+
+        $.ajax({
+            url: "<?php echo routeTo('commerce/cekDiscount') ?>",
+            method: "POST",
+            data: {
+                _token: document.querySelector('[name=_token]').value,
+                user_id: user_id ?? <?=auth()->id?>,
+            },
+            success: function(response) {
+                console.log(response);
+                $('#product').html(response);
+            },
+            error: function(xhr, status, error) {
+                console.error(`Error: ${error}`);
+            }
+
+        });
+    }
+
     $(document).ready(function() {
         $('#user_id').on('change', function() {
             if ($(this).val() === '0') {
@@ -414,16 +418,17 @@ get_header() ?>
 
         // Gunakan atribut data untuk mengambil ID produk dengan benar
         var id_product = $(this).attr('id');
+        var user_id    = $('#user_id').val();
 
         // Periksa apakah URL sudah benar
         $.ajax({
-            url: "<?php echo routeTo('commerce/dataProduct') ?>" + "?id=" + id_product,
+            url: "<?php echo routeTo('commerce/dataProduct') ?>" + "?id=" + id_product+ "&user_id=" + user_id,
             method: "GET",
             success: function(response) {
                 console.log(response)
                 var check = $('.id-barang-td:contains(' + response.data.id_product + ')').length;
                 if (check == 0) {
-                    tambahData(response.data.id_product, response.data.product_name, response.data.price, response.data.sku);
+                    tambahData(response.data.id_product, response.data.product_name, response.data.final_price, response.data.sku);
                 } else {
                     swal(
                         "",
@@ -443,7 +448,7 @@ get_header() ?>
         var check_barang = parseInt($('.jumlah_barang_text').length);
         var role_id = <?= get_role(auth()->id)->role_id ?>;
         var customer = <?= env('CUSTOMER_ROLE_ID') ?>;
-        if (role_id  !=  customer) {
+        if (role_id != customer) {
             if (bayar >= total) {
                 $('.nominal-error').prop('hidden', true);
                 if (check_barang != 0) {
@@ -474,20 +479,20 @@ get_header() ?>
                     );
                 }
             }
-        }else{
+        } else {
             if (check_barang != 0) {
-                    if ($('.diskon-input').attr('hidden') != 'hidden') {
-                        $('.diskon-input').addClass('is-invalid');
-                    } else {
-                        $('#transaction_form').submit();
-                    }
+                if ($('.diskon-input').attr('hidden') != 'hidden') {
+                    $('.diskon-input').addClass('is-invalid');
                 } else {
-                    swal(
-                        "",
-                        "Pesanan Kosong",
-                        "error"
-                    );
+                    $('#transaction_form').submit();
                 }
+            } else {
+                swal(
+                    "",
+                    "Pesanan Kosong",
+                    "error"
+                );
+            }
         }
     });
 </script>
