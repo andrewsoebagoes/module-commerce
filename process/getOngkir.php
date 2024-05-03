@@ -7,7 +7,7 @@ $apiKey = 'c7564e55cb13c4cb02583cbce83a0753';
 $ekspedisi      = $_POST['courier'];
 $jumlahBarang   = $_POST['jumlah_barang'];
 $distrik        = explode('-', $_POST['destination']);
-$berat          = 1000;
+$berat          = $_POST['weight'];
 $origin         = env('CODE_KABUPATEN_ASAL'); 
 
 $curl = curl_init();

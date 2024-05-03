@@ -41,9 +41,9 @@ if (Request::isMethod('POST')) {
         $user_id = $customer_user_id;
     }
 
-    echo '<pre>';
-    print_r($_POST);
-    die();
+    // echo '<pre>';
+    // print_r($_POST);
+    // die();
 
     if ($user_id == 0) {
         $username = strtolower($new_customer_name);
@@ -113,11 +113,11 @@ if (Request::isMethod('POST')) {
             'item_type'             => 'products',
             'discount_id'           => 0,
             'item_snapshot'         => json_encode($product),
-            'discount_snapshot'     => json_encode($discount),
+            'discount_snapshot'     => "[]",
             'quantity'              => $jumlah_barang[$i],
-            'item_price'            => $price[$i],
-            'discount_price'        => $discount_value,
-            'total_price'           => $total_price
+            'item_price'            => $final_price[$i],
+            'discount_price'        => 0,
+            'total_price'           => $total_barang[$i]
         ]);
 
         $db->query = ("UPDATE products

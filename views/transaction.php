@@ -94,7 +94,7 @@ get_header() ?>
             <div class="product-list-container">
 
                 <div class="product-list row mb-3" id="product">
-                   
+
 
                 </div>
             </div>
@@ -344,9 +344,13 @@ get_header() ?>
 
     // Fungsi untuk mengecek ongkos kirim
     function cekOngkir() {
-        const kabupatenTujuan   = $('#kabupatenTujuan').val();
-        const beratBarang       = '<?=$_POST['jumlah_barang']?>';
-        const ekspedisi         = $('#ekspedisi').val();
+        var jumlah_barang = 0;
+        $('.jumlah_barang_text').each(function() {
+            jumlah_barang += parseInt($(this).text());
+        });
+        const kabupatenTujuan = $('#kabupatenTujuan').val();
+        const beratBarang = 1000;
+        const ekspedisi = $('#ekspedisi').val();
 
         $.ajax({
             url: "<?php echo routeTo('commerce/getOngkir') ?>",
@@ -354,11 +358,12 @@ get_header() ?>
             data: {
                 _token: document.querySelector('[name=_token]').value,
                 destination: kabupatenTujuan,
-                weight: beratBarang,
+                weight: jumlah_barang * 1000,
                 courier: ekspedisi
             },
             success: function(response) {
                 $('#ongkir').html(response);
+                console.log(jumlah_barang);
             },
             error: function(xhr, status, error) {
                 console.error(`Error: ${error}`);
@@ -371,8 +376,20 @@ get_header() ?>
 
 
 <script>
-    cekDiscount();
-     function cekDiscount() {
+    <?php
+    // Periksa apakah pengguna memiliki peran yang sesuai
+    $isCustomerRole = get_role(auth()->id)->role_id == env('CUSTOMER_ROLE_ID');
+    ?>
+
+    // Ambil hasil pemeriksaan kondisi dari PHP
+    const isCustomerRole = <?php echo json_encode($isCustomerRole); ?>;
+
+    // Jika pengguna memiliki peran pelanggan, jalankan fungsi cekDiscount()
+    if (isCustomerRole) {
+        cekDiscount();
+    }
+
+    function cekDiscount() {
         const user_id = $('#user_id').val();
 
         $.ajax({
@@ -380,7 +397,7 @@ get_header() ?>
             method: "POST",
             data: {
                 _token: document.querySelector('[name=_token]').value,
-                user_id: user_id ?? <?=auth()->id?>,
+                user_id: user_id ?? <?= auth()->id ?>,
             },
             success: function(response) {
                 console.log(response);
@@ -418,11 +435,11 @@ get_header() ?>
 
         // Gunakan atribut data untuk mengambil ID produk dengan benar
         var id_product = $(this).attr('id');
-        var user_id    = $('#user_id').val();
+        var user_id = $('#user_id').val();
 
         // Periksa apakah URL sudah benar
         $.ajax({
-            url: "<?php echo routeTo('commerce/dataProduct') ?>" + "?id=" + id_product+ "&user_id=" + user_id,
+            url: "<?php echo routeTo('commerce/dataProduct') ?>" + "?id=" + id_product + "&user_id=" + user_id,
             method: "GET",
             success: function(response) {
                 console.log(response)

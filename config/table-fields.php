@@ -154,7 +154,7 @@
             'label' => __('commerce.label.invoice'),
             'type'  => 'options-obj:invoices,id,name'
         ],
-        'item_id' => [
+        'name' => [
             'label' => __('commerce.label.item'),
             'type'  => 'text'
         ],
