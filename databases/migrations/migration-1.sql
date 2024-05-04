@@ -54,7 +54,7 @@ CREATE TABLE invoices(
     payment_receive INT NULL,
     payment_return INT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    created_by INT NOT NULL,
+    created_by INT NULL,
     organization_id INT NULL,
     CONSTRAINT fk_invoices_user_id FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     CONSTRAINT fk_invoices_created_by FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL,
