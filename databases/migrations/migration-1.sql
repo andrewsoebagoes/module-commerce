@@ -82,7 +82,7 @@ CREATE TABLE invoice_media(
     invoice_id INT NOT NULL,
     media_id INT NOT NULL,
     status VARCHAR(100) NOT NULL,
-    CONSTRAINT fk_invoice_media_invoice_id FOREIGN KEY (invoce_id) REFERENCES invoices(id) ON DELETE CASCADE,
+    CONSTRAINT fk_invoice_media_invoice_id FOREIGN KEY (invoice_id) REFERENCES invoices(id) ON DELETE CASCADE,
     CONSTRAINT fk_invoice_media_id FOREIGN KEY (media_id) REFERENCES storage_media(id) ON DELETE CASCADE
 );
 
