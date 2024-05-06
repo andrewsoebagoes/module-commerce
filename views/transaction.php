@@ -50,16 +50,7 @@ get_header() ?>
         }
     }
 </style>
-<div class="page-title-box">
-    <div class="page-title-right">
-        <ol class="breadcrumb m-0">
-            <li class="breadcrumb-item"><a href="http://localhost:8080/">Home</a></li>
-            <li class="breadcrumb-item"><a href="http://localhost:8080/commerce/transaction">Transaction</a></li>
-            <li class="breadcrumb-item"><a href="javascript:void(0)">Index</a></li>
-        </ol>
-    </div>
-    <h4 class="page-title">Transaction</h4>
-</div>
+
 <div class="card">
     <div class="card-header d-flex flex-grow-1 align-items-center">
         <p class="h4 m-0"> Transaction</p>
@@ -72,7 +63,7 @@ get_header() ?>
             <?= csrf_field() ?>
 
             <?php if (get_role(auth()->id)->role_id != env('CUSTOMER_ROLE_ID')) : ?>
-                <div class="form-group col-md-5 mb-2 mt-2">
+                <div class="form-group col-md-12 mb-2 mt-2">
                     <label for="exampleInputPassword1"></label>
                     <select class="form-control select2 is-invalid" name="user_id" id="user_id" onchange="cekDiscount(this.value)" required>
                         <option value="">Pilih Customer</option>

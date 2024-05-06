@@ -4,6 +4,13 @@ use Core\Page;
 use Core\Database;
 use Core\Request;
 use Modules\Crud\Libraries\Repositories\CrudRepository;
+$tableName  = 'invoices';
+$table      = tableFields($tableName);
+$fields     = $table->getFields();
+$module     = $table->getModule();
+$title      = _ucwords(__("$module.label.$tableName"));
+$error_msg  = get_flash_msg('error');
+$old        = get_flash_msg('old');
 
 $success_msg = get_flash_msg('success');
 $transaction_success = get_flash_msg('transaction_success');
@@ -163,6 +170,25 @@ if (Request::isMethod('POST')) {
 
     die();
 }
+
+// page section
+$title = 'Transaction';
+Page::setActive("$module.$tableName");
+Page::setTitle('Transaction');
+Page::setModuleName('Transaction');
+Page::setBreadcrumbs([
+    [
+        'url' => routeTo('/'),
+        'title' => __('crud.label.home')
+    ],
+    [
+        'url' => routeTo('crud/index', ['table' => $tableName]),
+        'title' => $title
+    ],
+    [
+        'title' => 'Index'
+    ]
+]);
 
 
 
