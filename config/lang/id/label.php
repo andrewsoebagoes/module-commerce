@@ -36,4 +36,15 @@ return [
     'city'              => 'Kota',
     'courier'           => 'Kurir',
     'notes'             => 'Catatan',
+    'transaction'       => 'Transaksi',
+    'pics'              => 'Gambar',
+    'product_pics'      => 'Gambar Produk',
+    'detail'           => 'Detail',
+    'invoices'          => 'Invoices',
+    'invoice'          => 'Invoice',
+    'invoice_media'    => 'Invoice Media',
+    'invoice_items'    => 'Invoice Items',
+    'create'            => 'Buat',
+    'customer'          => 'Pelanggan',
+    'discount'          => 'Diskon'
 ];

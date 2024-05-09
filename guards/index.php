@@ -2,7 +2,6 @@
 
 use Core\Database;
 use Core\Response;
-
 $auth = auth();
 
 if(empty($auth))

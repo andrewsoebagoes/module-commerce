@@ -43,11 +43,14 @@ shippings.province,
 shippings.city,
 shippings.courier,
 shippings.address,
-shippings.notes
+shippings.notes,
+media.name image
 FROM invoices
 LEFT JOIN invoice_items ON invoices.id = invoice_items.invoice_id
 LEFT JOIN shippings ON invoices.id = shippings.invoice_id
 LEFT JOIN users ON invoices.user_id = users.id
+LEFT JOIN invoice_media ON invoices.id = invoice_media.invoice_id
+LEFT JOIN media ON invoice_media.media_id = media.id
 WHERE invoices.id = $invoice_id";
 
 
@@ -73,13 +76,13 @@ if (Request::isMethod('POST')) {
                 ");
     $db->exec();
 
-     // Set flash message
-     set_flash_msg(['success' => "Status berhasil diubah"]);
+    // Set flash message
+    set_flash_msg(['success' => "Status berhasil diubah"]);
 
-     header('Location:'.routeTo('commerce/detail-transaction',['filter'=>['invoice_id' => $invoice_id]]));
+    header('Location:' . routeTo('commerce/detail-transaction', ['id' => $invoice_id]));
 
 
-     die();
+    die();
 }
 // page section
 $title = _ucwords(__("$module.label.$tableName"));

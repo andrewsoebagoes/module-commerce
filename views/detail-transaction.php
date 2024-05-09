@@ -20,116 +20,76 @@
         <?php if ($error_msg) : ?>
             <div class="alert alert-danger"><?= $error_msg ?></div>
         <?php endif ?>
-        <?php if (get_role(auth()->id)->role_id != env('CUSTOMER_ROLE_ID')) : ?>
-            <div class="mb-4 ">
-                <div class="form-group row">
-                    <label for="staticEmail" class="col-sm-1 col-form-label">Invoice</label>
-                    <div class="col-sm-11">
-                        <span class="form-control-plaintext"><?= $invoice->code; ?></span>
-                    </div>
+        <div class="mb-4 ">
+            <div class="form-group row">
+                <label for="staticEmail" class="col-sm-2 col-form-label">Invoice</label>
+                <div class="col-sm-10">
+                    <span class="form-control-plaintext"><?= $invoice->code; ?></span>
                 </div>
-                <form action="" method="post">
-
-                    <div class="form-group row">
-                        <label for="staticEmail" class="col-sm-1 col-form-label">Status</label>
-                        <div class="col-sm-11">
-
-                            <span class="form-control-plaintext"><?= $invoice->status ?></span>
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label for="staticEmail" class="col-sm-1 col-form-label">Name</label>
-                        <div class="col-sm-11">
-                            <span class="form-control-plaintext"><?= $invoice->user_name ?></span>
-                        </div>
-                    </div>
-                </form>
-
-                <div class="form-group row mb-2">
-                    <label for="staticEmail" class="col-sm-1 col-form-label">Total Amount</label>
-                    <div class="col-sm-11">
-                        <span class="form-control-plaintext">Rp. <?= number_format($invoice->total_amount); ?></span>
-                    </div>
-                </div>
-
-                <?php if ($invoice->status != 'Finished') : ?>
-                    <form action="" method="post">
-                        <?= csrf_field() ?>
-                        <div class="mb-3 col-3">
-                            <label for="status" class="form-label">Update Status</label>
-                            <select name="status" id="" class="form-control">
-                                <option value="">--Pilih Status--</option>
-                                <option value="Waiting for Payment">Waiting for Payment</option>
-                                <option value="Confirm">Confirm</option>
-                                <option value="Finished">Finished</option>
-                            </select>
-                        </div>
-
-                        <button type="submit" class="btn btn-outline-primary">Simpan</button>
-                    </form>
-                <?php endif ?>
-
             </div>
-        <?php else : ?>
-            <div class="mb-4 ">
-                <div class="form-group row">
-                    <label for="staticEmail" class="col-sm-1 col-form-label">Invoice</label>
-                    <div class="col-sm-11">
-                        <span class="form-control-plaintext"><?= $invoice->code; ?></span>
-                    </div>
-                </div>
-                <form action="" method="post">
-
-                    <div class="form-group row">
-                        <label for="staticEmail" class="col-sm-1 col-form-label">Status</label>
-                        <div class="col-sm-11">
-
-                            <span class="form-control-plaintext"><?= $invoice->status ?></span>
-                        </div>
-                    </div>
-
-                    <div class="form-group row">
-                        <label for="staticEmail" class="col-sm-1 col-form-label">Name</label>
-                        <div class="col-sm-11">
-                            <span class="form-control-plaintext"><?= $invoice->user_name ?></span>
-                        </div>
-                    </div>
-                </form>
-
-                <div class="form-group row mb-4">
-                    <label for="staticEmail" class="col-sm-1 col-form-label">Total Amount</label>
-                    <div class="col-sm-11">
-                        <span class="form-control-plaintext">Rp. <?= number_format($invoice->total_amount); ?></span>
-                    </div>
-                </div>
-
+            <form action="" method="post">
 
                 <div class="form-group row">
-                    <label for="staticEmail" class="col-sm-1 col-form-label">Address</label>
-                    <div class="col-sm-11">
-                        <span class="form-control-plaintext"><?= $invoice->country  . ', ' . $invoice->province . ', ' . $invoice->city . ' (' . $invoice->address . ')'  ?></span>
+                    <label for="staticEmail" class="col-sm-2 col-form-label">Status</label>
+                    <div class="col-sm-10">
+
+                        <span class="form-control-plaintext"><?= $invoice->status ?></span>
                     </div>
                 </div>
 
                 <div class="form-group row">
-                    <label for="staticEmail" class="col-sm-1 col-form-label">Courier</label>
-                    <div class="col-sm-11">
-                        <span class="form-control-plaintext"><?= $invoice->courier ?></span>
+                    <label for="staticEmail" class="col-sm-2 col-form-label">Name</label>
+                    <div class="col-sm-10">
+                        <span class="form-control-plaintext"><?= $invoice->user_name ?></span>
                     </div>
                 </div>
+            </form>
 
-                <div class="form-group row">
-                    <label for="staticEmail" class="col-sm-1 col-form-label">Notes</label>
-                    <div class="col-sm-11">
-                        <span class="form-control-plaintext"><?= $invoice->notes ?></span>
-                    </div>
+            <div class="form-group row mb-2">
+                <label for="staticEmail" class="col-sm-2 col-form-label">Total Amount</label>
+                <div class="col-sm-10">
+                    <span class="form-control-plaintext">Rp. <?= number_format($invoice->total_amount); ?></span>
                 </div>
-
-            
             </div>
 
-        <?php endif; ?>
+            <div class="form-group row mb-2">
+
+                <label for="staticEmail" class="col-sm-2 col-form-label">Bukti Pembayaran</label>
+                <?php if ($invoice->image) : ?>
+                    <div class="col-sm-10">
+                        <span class="form-control-plaintext"><a href="<?= routeTo($invoice->image) ?>" target="_blank">Lihat Bukti Pembayaran</a></span>
+                    </div>
+                <?php else : ?>
+
+                    <div class="col-sm-10">
+                        <span class="form-control-plaintext text-danger">Pembeli belum melakukan pembayaran</span>
+                    </div>
+                <?php endif  ?>
+            </div>
+
+            <div class="form-group row mb-2">
+
+            <?php if ($invoice->status != 'Finished') : ?>
+                <form action="" method="post">
+                    <?= csrf_field() ?>
+                    <div class="mb-3 col-3">
+                        <label for="status" class="form-label">Update Status</label>
+                        <select name="status" id="" class="form-control">
+                            <option value="">--Pilih Status--</option>
+                            <option value="Waiting for Payment">Waiting for Payment</option>
+                            <option value="Confirm">Confirm</option>
+                            <option value="Finished">Finished</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-outline-primary">Simpan</button>
+                </form>
+            <?php endif ?>
+
+
+
+        </div>
+
 
 
 

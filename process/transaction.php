@@ -47,7 +47,6 @@ if (Request::isMethod('POST')) {
 
         $user_id = $customer_user_id;
     }
-
     // echo '<pre>';
     // print_r($_POST);
     // die();
@@ -113,8 +112,6 @@ if (Request::isMethod('POST')) {
             WHERE products.item_id = {$id_product[$i]}";
 
         $product = $db->exec('single');
-
-        
         
         $invoice_items = $db->insert('invoice_items', [
             'invoice_id'            => $lastInvoiceId,

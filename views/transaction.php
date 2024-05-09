@@ -237,8 +237,9 @@ get_header() ?>
                                         <?php else : ?>
 
                                             <div class="mb-3 mt-3">
-                                                <label for="provinsiTujuan" class="form-label">Provinsi Tujuan</label>
-                                                <select class="form-select" id="provinsiTujuan" name="provinsiTujuan" onchange="getKabupatenTujuan(this.value)">
+                                                <label for="provinsiTujuan" class="form-control">Provinsi Tujuan</label>
+                                                <select class="form-control" id="provinsiTujuan" name="provinsiTujuan" onchange="getKabupatenTujuan(this.value)">
+                                                
                                                 </select>
                                             </div>
 
