@@ -1,0 +1,1 @@
+ALTER TABLE `invoice_media` CHANGE `status` `status` VARCHAR(100) NULL;
