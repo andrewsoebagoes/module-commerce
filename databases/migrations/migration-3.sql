@@ -1,1 +1,1 @@
-ALTER TABLE `invoice_media` ADD  CONSTRAINT `fk_invoice_media_id` FOREIGN KEY (`media_id`) REFERENCES `media`(`id`) ON DELETE CASCADE;
+ALTER TABLE `invoice_media` ADD  CONSTRAINT `fk_invoice_media_media_id` FOREIGN KEY (`media_id`) REFERENCES `media`(`id`) ON DELETE CASCADE;
