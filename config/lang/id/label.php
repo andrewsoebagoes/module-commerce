@@ -46,5 +46,8 @@ return [
     'invoice_items'    => 'Invoice Items',
     'create'            => 'Buat',
     'customer'          => 'Pelanggan',
-    'discount'          => 'Diskon'
+    'discount'          => 'Diskon',
+    'products'          => 'Produk',
+    'discount_applicables'        => 'Aplikasi Diskon',
+    'product_discount'  => 'Diskon Produk',
 ];

@@ -14,7 +14,7 @@ if($filter)
     $where .= (empty($where) ? 'WHERE ' : ' AND ') . $filter_query;
 }
 
-$db->query = "SELECT inventory_items.name product_name, discounts.name discount_name, product_discount.id id, product_discount.status, product_discount.id product_id 
+$db->query = "SELECT inventory_items.name product_name, discounts.name discount_name, product_discount.id id, product_discount.status, product_discount.product_id product_id 
                 FROM product_discount 
                 JOIN products ON products.id = product_discount.product_id 
                 JOIN inventory_items ON inventory_items.id = products.item_id

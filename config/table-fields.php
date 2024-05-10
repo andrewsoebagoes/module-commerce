@@ -19,11 +19,11 @@
         ],
         'status' => [
             'label' => __('commerce.label.status'),
-            'type'  => 'text'
+            'type'  => 'options:Ada|Tidak Ada'
         ],
         'description' => [
             'label' => __('commerce.label.description'),
-            'type'  => 'text'
+            'type'  => 'textarea'
         ]
     ],
 
@@ -53,7 +53,7 @@
         ],
         'discount_value' => [
             'label' => __('commerce.label.discount_value'),
-            'type'  => 'text'
+            'type'  => 'number'
         ],
         'record_type' => [
             'label' => __('commerce.label.record_type'),
@@ -61,7 +61,7 @@
         ],
         'status' => [
             'label' => __('commerce.label.status'),
-            'type'  => 'text'
+            'type'  => 'options:Aktif|Tidak Aktif'
         ]
     ],
 

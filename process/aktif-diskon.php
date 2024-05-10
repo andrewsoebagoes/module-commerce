@@ -4,7 +4,7 @@ use Core\Database;
 
 $db = new Database;
 
-$id     = $_GET['id'];
+$id             = $_GET['id'];
 $product_id     = $_GET['product_id'];
 
 $db->query = ("UPDATE product_discount
