@@ -51,5 +51,7 @@ return [
     'create'            => 'Create',
     'customer'          => 'Customer',
     'min_quantity' => 'Minimum Quantity',
+    'pos_panel' => 'POS Panel',
+    'price_setting' => 'Price Setting',
     
 ];

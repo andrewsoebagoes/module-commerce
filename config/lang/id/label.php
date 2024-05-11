@@ -51,4 +51,6 @@ return [
     'discount_applicables'        => 'Aplikasi Diskon',
     'product_discount'  => 'Diskon Produk',
     'min_quantity' => 'Pembelian Minimum',
+    'pos_panel' => 'POS Panel',
+    'price_setting' => 'Aturan Harga',
 ];

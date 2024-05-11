@@ -5,5 +5,6 @@ return [
     'discounts'     => 'Diskon',
     'products'      => 'Produk',
     'customer'      => 'Pelanggan',
-    'transaction'   => 'Transaksi'
+    'transaction'   => 'Transaksi',
+    'transactions'   => 'Transaksi'
 ];

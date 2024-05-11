@@ -368,13 +368,9 @@ get_header() ?>
 
 
 <script>
-    <?php
-    // Periksa apakah pengguna memiliki peran yang sesuai
-    $isCustomerRole = get_role(auth()->id)->role_id == env('CUSTOMER_ROLE_ID');
-    ?>
 
     // Ambil hasil pemeriksaan kondisi dari PHP
-    const isCustomerRole = <?php echo json_encode($isCustomerRole); ?>;
+    const isCustomerRole = <?= get_role(auth()->id)->role_id == env('CUSTOMER_ROLE_ID') ? 1 : 0 ?>;
 
     // Jika pengguna memiliki peran pelanggan, jalankan fungsi cekDiscount()
     if (isCustomerRole) {

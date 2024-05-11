@@ -101,6 +101,7 @@ if (Request::isMethod('POST')) {
     for ($i = 0; $i < $jml_barang; $i++) {
 
         $db->query  = "SELECT
+            products.id,
             products.item_id id_product,
             products.price,
             products.sku,
@@ -113,7 +114,7 @@ if (Request::isMethod('POST')) {
         
         $invoice_items = $db->insert('invoice_items', [
             'invoice_id'            => $lastInvoiceId,
-            'item_id'               => $id_product[$i],
+            'item_id'               => $product->id,
             'item_type'             => 'products',
             'discount_id'           => 0,
             'item_snapshot'         => json_encode($product),
@@ -125,7 +126,7 @@ if (Request::isMethod('POST')) {
         ]);
 
         $db->insert('inventory_item_logs', [
-            'item_id' => $product->item_id,
+            'item_id' => $product->id_product,
             'amount'  => $jumlah_barang[$i],
             'organization_src_id' => $organizationId,
             'organization_dst_id' => env('CUSTOMER_ORGANIZATION_ID'),
@@ -156,7 +157,7 @@ if (Request::isMethod('POST')) {
 
     // Set flash message
     set_flash_msg(['success' => "Transaksi berhasil ditambahkan"]);
-    header('Location: /commerce/data-transaction');
+    header('Location: '. routeTo('crud/index', ['table' => 'invoices']));
     die();
 }
 

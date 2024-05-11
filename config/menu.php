@@ -8,7 +8,7 @@
     ],
     [
         'label' => 'commerce.menu.products',
-        'icon'  => 'fa-fw fa-xl me-2 fa-solid fa-list-ul',
+        'icon'  => 'fa-fw fa-xl me-2 fa-solid fa-cubes',
         'route' => routeTo('crud/index', ['table' => 'products']),
         'activeState' => 'commerce.products'
     ],
@@ -19,9 +19,9 @@
         'activeState' => 'commerce.customer'
     ],
     [
-        'label' => 'commerce.menu.transaction',
-        'icon'  => 'fa-fw fa-xl me-2 fa-solid fa-random',
-        'route' => routeTo('commerce/data-transaction'),
+        'label' => 'commerce.menu.transactions',
+        'icon'  => 'fa-fw fa-xl me-2 fa-solid fa-dollar',
+        'route' => routeTo('crud/index', ['table' => 'invoices']),
         'activeState' => 'commerce.transaction'
     ],
    
