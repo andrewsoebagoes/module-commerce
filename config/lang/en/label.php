@@ -50,5 +50,6 @@ return [
     'invoice_items'    => 'Invoice Items',
     'create'            => 'Create',
     'customer'          => 'Customer',
+    'min_quantity' => 'Minimum Quantity',
     
 ];

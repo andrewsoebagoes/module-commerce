@@ -2,7 +2,7 @@
 return [
     'item'              => 'Barang',
     'parent'            => 'Induk',
-    'sku'               => 'Stok',
+    'sku'               => 'SKU',
     'price'             => 'Harga',
     'status'            => 'Status',
     'description'       => 'Deskripsi',
@@ -50,4 +50,5 @@ return [
     'products'          => 'Produk',
     'discount_applicables'        => 'Aplikasi Diskon',
     'product_discount'  => 'Diskon Produk',
+    'min_quantity' => 'Pembelian Minimum',
 ];

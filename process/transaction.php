@@ -26,8 +26,7 @@ $db->query  = "SELECT
     inventory_items.name AS product_name
     FROM products
     JOIN inventory_items ON inventory_items.id = products.item_id
-    WHERE products.status = 'PUBLISH'
-    AND products.sku > 0";
+    WHERE products.status = 'PUBLISH'";
 
 $products = $db->exec('all');
 
@@ -39,6 +38,8 @@ if (Request::isMethod('POST')) {
     extract($_POST);
 
     $is_customer = get_role(auth()->id)->role_id == env('CUSTOMER_ROLE_ID');
+    $organizationUser = $db->single('organization_users', ['user_id' => auth()->id]);
+    $organizationId = $organizationUser ? $organizationUser->organization_id : 1;
 
     if ($is_customer) {
         $ongkir   = explode('-', $ongkir);
@@ -47,9 +48,6 @@ if (Request::isMethod('POST')) {
 
         $user_id = $customer_user_id;
     }
-    // echo '<pre>';
-    // print_r($_POST);
-    // die();
 
     if ($user_id == 0) {
         $username = strtolower($new_customer_name);
@@ -79,7 +77,7 @@ if (Request::isMethod('POST')) {
         'payment_return'    => isset($bayar) ? $bayar - $total : 0,
         'created_at'        => date('Y-m-d H:i:s'),
         'created_by'        => auth()->id,
-        // 'organization_id'   => 1
+        'organization_id'   => $organizationId
     ];
 
     $data = $db->insert('invoices', $dataInvoices);
@@ -126,11 +124,12 @@ if (Request::isMethod('POST')) {
             'total_price'           => $total_barang[$i]
         ]);
 
-        $db->query = ("UPDATE products
-                    SET sku = $product->sku - $jumlah_barang[$i]
-                    WHERE products.item_id = {$id_product[$i]}
-                    ");
-        $db->exec();
+        $db->insert('inventory_item_logs', [
+            'item_id' => $product->item_id,
+            'amount'  => $jumlah_barang[$i],
+            'organization_src_id' => $organizationId,
+            'organization_dst_id' => env('CUSTOMER_ORGANIZATION_ID'),
+        ]);
 
         $grand_total += $invoice_items->total_price;
     }
@@ -151,20 +150,13 @@ if (Request::isMethod('POST')) {
         $grand_total += $ongkir[1];
     }
 
-
-
     $db->update('invoices', [
         'total_amount' => $grand_total,
     ], ['id' => $lastInvoiceId]);
 
-
-
     // Set flash message
     set_flash_msg(['success' => "Transaksi berhasil ditambahkan"]);
-
-
     header('Location: /commerce/data-transaction');
-
     die();
 }
 
@@ -191,16 +183,6 @@ Page::setBreadcrumbs([
 
 
 Page::pushHead('<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />');
-Page::pushHead("<script>
-tinymce.init({
-  selector: 'textarea:not(.select2-search__field)',
-  relative_urls : false,
-  remove_script_host : false,
-  convert_urls : true,
-  plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
-  toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
-});
-</script>");
 
 Page::pushHead('<style>.select2,.select2-selection{height:38px!important;} .select2-container--default .select2-selection--single .select2-selection__rendered{line-height:38px!important;}.select2-selection__arrow{height:34px!important;}</style>');
 Page::pushFoot('<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>');
