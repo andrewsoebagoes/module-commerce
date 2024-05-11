@@ -1,0 +1,1 @@
+ALTER TABLE `products` CHANGE `sku` `sku` VARCHAR(100) NULL;
