@@ -17,7 +17,8 @@ LEFT JOIN inventory_items ON products.item_id = inventory_items.id
 LEFT JOIN discounts ON discounts.id = product_discount.discount_id 
 LEFT JOIN discount_applicables ON discount_applicables.user_id = $user_id
 LEFT JOIN discounts as discount_user ON discount_user.id = discount_applicables.discount_id
-WHERE products.sku > 0";
+WHERE products.sku > 0
+AND products.status = 'PUBLISH'";
 
 $discount = $db->exec('all');
 

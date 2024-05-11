@@ -19,7 +19,7 @@
         ],
         'status' => [
             'label' => __('commerce.label.status'),
-            'type'  => 'options:Ada|Tidak Ada'
+            'type'  => 'options:PUBLISH|DRAFT'
         ],
         'description' => [
             'label' => __('commerce.label.description'),

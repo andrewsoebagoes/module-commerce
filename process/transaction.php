@@ -26,7 +26,7 @@ $db->query  = "SELECT
     inventory_items.name AS product_name
     FROM products
     JOIN inventory_items ON inventory_items.id = products.item_id
-    WHERE products.status = 'Ada'
+    WHERE products.status = 'PUBLISH'
     AND products.sku > 0";
 
 $products = $db->exec('all');
