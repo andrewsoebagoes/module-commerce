@@ -112,7 +112,7 @@
             'type'  => 'text'
         ],
         'user_id' => [
-            'label' => __('commerce.label.user'),
+            'label' => __('commerce.label.customer'),
             'type'  => 'options-obj:users,id,name'
         ],
         'status' => [
@@ -141,7 +141,7 @@
         ],
         'created_by' => [
             'label' => __('commerce.label.created_by'),
-            'type'  => 'text'
+            'type'  => 'options-obj:users,id,name'
         ],
         'organization_id' => [
             'label' => __('commerce.label.organization'),

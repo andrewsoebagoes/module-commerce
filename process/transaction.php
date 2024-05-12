@@ -3,7 +3,7 @@
 use Core\Page;
 use Core\Database;
 use Core\Request;
-use Modules\Crud\Libraries\Repositories\CrudRepository;
+
 $tableName  = 'invoices';
 $table      = tableFields($tableName);
 $fields     = $table->getFields();
@@ -63,7 +63,7 @@ if (Request::isMethod('POST')) {
 
         $db->insert('user_roles', [
             'user_id'   => $dataUser->id,
-            'role_id'   => 3
+            'role_id'   => env('CUSTOMER_ROLE_ID')
         ]);
     }
 
@@ -102,13 +102,13 @@ if (Request::isMethod('POST')) {
 
         $db->query  = "SELECT
             products.id,
-            products.item_id id_product,
+            products.item_id,
             products.price,
             products.sku,
             inventory_items.name AS product_name
             FROM products
             JOIN inventory_items ON inventory_items.id = products.item_id
-            WHERE products.item_id = {$id_product[$i]}";
+            WHERE products.id = {$id_product[$i]}";
 
         $product = $db->exec('single');
         
@@ -126,7 +126,7 @@ if (Request::isMethod('POST')) {
         ]);
 
         $db->insert('inventory_item_logs', [
-            'item_id' => $product->id_product,
+            'item_id' => $product->item_id,
             'amount'  => $jumlah_barang[$i],
             'organization_src_id' => $organizationId,
             'organization_dst_id' => env('CUSTOMER_ORGANIZATION_ID'),

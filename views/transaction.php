@@ -386,6 +386,7 @@ get_header() ?>
             data: {
                 _token: document.querySelector('[name=_token]').value,
                 user_id: user_id ?? <?= auth()->id ?>,
+                quantity: 15
             },
             success: function(response) {
                 console.log(response);
