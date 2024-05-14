@@ -71,6 +71,7 @@ function jumlahBarang() {
     jumlah_barang += parseInt($(this).text());
   });
   $('.jml-barang-td').html(jumlah_barang + ' Barang');
+  console.log(jumlah_barang);
 }
 
 function tambahData(id_product, product_name, final_price, sku) {
@@ -86,6 +87,7 @@ $(document).on('click', '.btn-tambah', function (e) {
   e.preventDefault();
   var stok = parseInt($(this).parent().parent().next().next().next().children().first().text());
   var jumlah_barang = parseInt($(this).prev().prev().prev().val());
+ 
   if (stok > jumlah_barang) {
     var tambah_barang = jumlah_barang + 1;
     $(this).prev().prev().prev().val(tambah_barang);

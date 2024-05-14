@@ -18,18 +18,19 @@ $success_msg    = get_flash_msg('success');
 $error_msg      = get_flash_msg('error');
 
 // get data
-$crudRepository = new CrudRepository($tableName);
-$crudRepository->setModule($module);
-
-if (isset($_GET['draw'])) {
-    return $crudRepository->dataTable($fields);
-}
-
-
 
 $db = new Database;
 $db->query  = "SELECT
-invoice_items.*,
+invoice_items.item_id,
+invoice_items.item_type,
+invoice_items.discount_id,
+invoice_items.quantity,
+invoice_items.discount_price,
+invoice_items.item_price,
+invoice_items.total_price,
+inventory_items.id AS inventory_item_id,
+inventory_items.name AS item_name,
+users.id AS user_id,
 users.name AS user_name,
 invoices.id AS id_invoice,
 invoices.code,
@@ -38,37 +39,45 @@ invoices.user_id,
 invoices.total_amount,
 invoices.created_at,
 invoices.created_by,
+media.name AS image,
 shippings.country,
 shippings.province,
 shippings.city,
 shippings.courier,
 shippings.address,
 shippings.notes,
-media.name image
+CASE
+    WHEN invoice_items.item_type = 'products' THEN inventory_items.name
+    WHEN invoice_items.item_type = 'shippings' THEN shippings.courier
+    ELSE NULL
+END AS name
 FROM invoices
 LEFT JOIN invoice_items ON invoices.id = invoice_items.invoice_id
-LEFT JOIN shippings ON invoices.id = shippings.invoice_id
-LEFT JOIN users ON invoices.user_id = users.id
+LEFT JOIN products ON invoice_items.item_id = products.id AND invoice_items.item_type = 'products'
+LEFT JOIN inventory_items ON products.item_id = inventory_items.id
+LEFT JOIN shippings ON invoice_items.invoice_id = shippings.invoice_id AND invoice_items.item_type = 'shippings' 
 LEFT JOIN invoice_media ON invoices.id = invoice_media.invoice_id
 LEFT JOIN media ON invoice_media.media_id = media.id
-WHERE invoices.id = $invoice_id";
+LEFT JOIN users ON invoices.user_id = users.id
+WHERE invoices.id = $invoice_id
+";
 
+$invoice = $db->exec('all');
 
-$invoice = $db->exec('single');
 
 // echo '<pre>';
 // print_r($invoice);
 // die();
 
+$organizationUser = $db->single('organization_users', ['user_id' => auth()->id]);
+$organizationId = $organizationUser ? $organizationUser->organization_id : 1;
 
 if (Request::isMethod('POST')) {
 
     extract($_POST);
-    extract($_FILES);
     // echo '<pre>';
     // print_r($_POST);
     // die();
-
 
     $db->query = ("UPDATE invoices
                     SET invoices.status = '$status'
@@ -76,35 +85,50 @@ if (Request::isMethod('POST')) {
                 ");
     $db->exec();
 
-    // Set flash message
+    if ($status == 'Finished') {
+        foreach ($invoice as $key => $product) {
+
+            $db->query  = "SELECT
+            products.id,
+            products.item_id,
+            products.price,
+            products.sku,
+            inventory_items.name AS product_name
+            FROM products
+            JOIN inventory_items ON inventory_items.id = products.item_id
+            WHERE products.id = {$product->item_id}";
+
+            $produk = $db->exec('single');
+
+            if ($product->item_type == 'shippings') continue;
+
+            $db->insert('inventory_item_logs', [
+                'item_id' => $produk->item_id,
+                'amount'  => $product->quantity,
+                'organization_src_id' => $organizationId,
+                'organization_dst_id' => env('CUSTOMER_ORGANIZATION_ID'),
+            ]);
+        }
+   
+    }
+
+
     set_flash_msg(['success' => "Status berhasil diubah"]);
 
     header('Location:' . routeTo('commerce/detail-transaction', ['id' => $invoice_id]));
+    // Set flash message
 
 
     die();
 }
 // page section
-$title = _ucwords(__("$module.label.$tableName"));
-Page::setActive("$module.$tableName");
+$title = "Detail Transaksi";
+Page::setActive("$title");
 Page::setTitle($title);
 Page::setModuleName($title);
-Page::setBreadcrumbs([
-    [
-        'url' => routeTo('/'),
-        'title' => __('crud.label.home')
-    ],
-    [
-        'url' => routeTo('crud/index', ['table' => $tableName]),
-        'title' => $title
-    ],
-    [
-        'title' => 'Index'
-    ]
-]);
+
 
 Page::pushFoot("<script src='" . asset('assets/crud/js/crud.js') . "'></script>");
 
-Page::pushHook();
 
-return view('commerce/views/detail-transaction', compact('fields', 'tableName', 'success_msg', 'error_msg', 'crudRepository', 'invoice'));
+return view('commerce/views/detail-transaction', compact('success_msg', 'error_msg', 'invoice'));

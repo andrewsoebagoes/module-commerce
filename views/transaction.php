@@ -305,66 +305,6 @@ get_header() ?>
 
 <?php get_footer() ?>
 
-<script>
-    getProvinsiTujuan();
-
-    function getProvinsiTujuan() {
-        $.ajax({
-            url: "<?php echo routeTo('commerce/getProvinsi') ?>",
-            method: "GET",
-            success: function(response) {
-                $('#provinsiTujuan').html(response);
-            },
-            error: function(xhr, status, error) {
-                console.error(`Error: ${error}`);
-            }
-        });
-    }
-
-    function getKabupatenTujuan(idProvinsi) {
-        $.ajax({
-            url: "<?php echo routeTo('commerce/getKabupaten') ?>" + "?id_provinsi=" + idProvinsi,
-            method: "GET",
-            success: function(response) {
-                $('#kabupatenTujuan').html(response);
-            },
-            error: function(xhr, status, error) {
-                console.error(`Error: ${error}`);
-            }
-        });
-    }
-
-    // Fungsi untuk mengecek ongkos kirim
-    function cekOngkir() {
-        var jumlah_barang = 0;
-        $('.jumlah_barang_text').each(function() {
-            jumlah_barang += parseInt($(this).text());
-        });
-        const kabupatenTujuan = $('#kabupatenTujuan').val();
-        const beratBarang = 1000;
-        const ekspedisi = $('#ekspedisi').val();
-
-        $.ajax({
-            url: "<?php echo routeTo('commerce/getOngkir') ?>",
-            method: "POST",
-            data: {
-                _token: document.querySelector('[name=_token]').value,
-                destination: kabupatenTujuan,
-                weight: jumlah_barang * 1000,
-                courier: ekspedisi
-            },
-            success: function(response) {
-                $('#ongkir').html(response);
-                console.log(jumlah_barang);
-            },
-            error: function(xhr, status, error) {
-                console.error(`Error: ${error}`);
-            }
-
-        });
-    }
-</script>
-
 
 
 <script>
@@ -386,7 +326,7 @@ get_header() ?>
             data: {
                 _token: document.querySelector('[name=_token]').value,
                 user_id: user_id ?? <?= auth()->id ?>,
-                quantity: 15
+                quantity: 1
             },
             success: function(response) {
                 console.log(response);
@@ -418,87 +358,240 @@ get_header() ?>
     });
 </script>
 
-<script type="text/javascript">
-    $(document).on('click', '.btn-pilih', function(e) {
-        e.preventDefault();
+<script>
+	// Panggil fungsi untuk menampilkan data cart saat halaman dimuat
+	displayCart();
+	updateCart();
 
-        // Gunakan atribut data untuk mengambil ID produk dengan benar
-        var id_product = $(this).attr('id');
-        var user_id = $('#user_id').val();
+	// Fungsi untuk mendapatkan data cart dari localStorage
+	function getCartData() {
+		const cartData = localStorage.getItem('cart');
+		if (cartData) {
+			return JSON.parse(cartData);
+		}
+		return [];
+	}
 
-        // Periksa apakah URL sudah benar
-        $.ajax({
-            url: "<?php echo routeTo('commerce/dataProduct') ?>" + "?id=" + id_product + "&user_id=" + user_id,
-            method: "GET",
-            success: function(response) {
-                console.log(response)
-                var check = $('.id-barang-td:contains(' + response.data.id_product + ')').length;
-                if (check == 0) {
-                    tambahData(response.data.id_product, response.data.product_name, response.data.final_price, response.data.sku);
-                } else {
-                    swal(
-                        "",
-                        "Barang telah ditambahkan",
-                        "error"
-                    );
-                }
-            }
-        });
-    });
+	// Fungsi untuk menampilkan data cart dalam tabel
+	function displayCart() {
+		// Dapatkan data cart dari localStorage
+		const cart = getCartData();
+
+		// Temukan elemen tabel cart
+		const cartTableBody = document.querySelector('.cart-table tbody');
+
+		// Bersihkan isi tabel sebelumnya
+		cartTableBody.innerHTML = '';
+
+		// Loop melalui setiap item di cart dan buat baris tabel
+		cart.forEach(item => {
+			const tr = document.createElement('tr');
+
+			// Tambahkan atribut data-product-id ke elemen tr
+			tr.setAttribute('data-product-id', item.productId);
+
+			// Kolom untuk tombol hapus
+			const deleteTd = document.createElement('td');
+			const deleteLink = document.createElement('a');
+			deleteLink.href = 'javascript:void(0);';
+			deleteLink.textContent = 'X';
+			deleteLink.onclick = () => {
+				// Tampilkan alert konfirmasi
+				const isConfirmed = confirm("Apakah Anda yakin ingin menghapus item ini?");
+				// Jika pengguna memilih "OK" pada alert
+				if (isConfirmed) {
+					// Panggil fungsi removeFromCart dengan itemId dari item
+					removeFromCart(item.productId);
+					// Segarkan (refresh) halaman untuk memperbarui tampilan
+					location.reload();
+				}
+			};
+			deleteTd.appendChild(deleteLink);
+			tr.appendChild(deleteTd);
+
+			// Kolom untuk nama produk
+			const nameTd = document.createElement('td');
+			const nameDiv = document.createElement('div');
+			nameDiv.className = 'product-title';
+			const nameLink = document.createElement('a');
+			nameLink.href = '#';
+			nameLink.textContent = item.productName;
+			nameDiv.appendChild(nameLink);
+			nameTd.appendChild(nameDiv);
+			tr.appendChild(nameTd);
+
+			// Kolom untuk kuantitas
+			const quantityTd = document.createElement('td');
+			const quantityInput = document.createElement('input');
+			quantityInput.type = 'number';
+			quantityInput.value = item.quantity;
+			quantityTd.appendChild(quantityInput);
+			tr.appendChild(quantityTd);
+
+			// Kolom untuk harga per item
+			const priceTd = document.createElement('td');
+			const priceDiv = document.createElement('div');
+			priceDiv.className = 'price-box';
+			const priceSpan = document.createElement('span');
+			priceSpan.className = 'price';
+
+			// Gunakan `toLocaleString()` untuk memformat harga sesuai dengan standar Indonesia
+			// const formattedPrice = item.productPrice.toLocaleString('id-ID', {
+			const formattedPrice = item.final_price.toLocaleString('id-ID', {
+				style: 'currency',
+				currency: 'IDR',
+				minimumFractionDigits: 0,
+			});
+
+			// Set textContent dengan format yang sudah diperoleh
+			priceSpan.textContent = `${item.quantity} x ${item.final_price}`;
+			priceDiv.appendChild(priceSpan);
+			priceTd.appendChild(priceDiv);
+			tr.appendChild(priceTd);
+
+			// Kolom untuk total harga
+			const totalPriceTd = document.createElement('td');
+			const totalPriceDiv = document.createElement('div');
+			totalPriceDiv.className = 'total-price-box';
+			const totalPriceSpan = document.createElement('span');
+			totalPriceSpan.className = 'price';
+			const totalPrice = item.quantity * item.final_price;
+			const formattedTotalPrice = totalPrice.toLocaleString('id-ID', {
+				style: 'currency',
+				currency: 'IDR',
+				minimumFractionDigits: 0,
+			});
+
+			totalPriceSpan.textContent = `${formattedTotalPrice}`;
+			totalPriceDiv.appendChild(totalPriceSpan);
+			totalPriceTd.appendChild(totalPriceDiv);
+			tr.appendChild(totalPriceTd);
+
+			// Tambahkan baris ke tabel
+			cartTableBody.appendChild(tr);
+		});
+	}
+	// Menambahkan event listener untuk elemen select dengan ID "ongkir"
+	document.getElementById('ongkir').addEventListener('change', function() {
+		totalOngkir(this.value);
+	});
+
+
+	function updateCart() {
+		// Dapatkan data keranjang dari localStorage
+		let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+		// Dapatkan semua baris dalam tabel cart
+		const rows = document.querySelectorAll('.cart-table tbody tr');
+		let totalHargaProduk = 0;
+
+		// Iterasi melalui setiap baris dalam tabel
+		rows.forEach(row => {
+			// Dapatkan input kuantitas
+			const quantityInput = row.querySelector('input[type="number"]');
+			// Dapatkan ID produk
+			const productId = row.getAttribute('data-product-id'); // Asumsikan setiap baris memiliki atribut data-product-id
+
+			// Periksa apakah kuantitas input ada dan valid
+			if (quantityInput) {
+				const newQuantity = parseInt(quantityInput.value);
+
+				// Validasi kuantitas
+				if (!isNaN(newQuantity) && newQuantity >= 0) {
+
+					// Dapatkan harga per item
+					const itemPrice = row.querySelector('.price-box .price');
+					const itemPriceText = itemPrice.textContent;
+					// Pisahkan kuantitas dan harga dari string
+					const [quantityText, priceText] = itemPriceText.split(' x ');
+					const priceValue = priceText.replace(/[^0-9]/g, '');
+					const price = parseFloat(priceValue);
+
+					// Validasi harga per item
+					if (!isNaN(price)) {
+						// Hitung total baru
+						const newTotal = newQuantity * price;
+
+						// Perbarui kolom harga
+						const formattedPrice = newQuantity + ' x Rp. ' + price.toLocaleString('id-ID');
+						const priceColumn = row.querySelector('.price-box .price');
+						priceColumn.textContent = formattedPrice;
+
+						// Perbarui kolom total
+						const formattedTotal = 'Rp. ' + newTotal.toLocaleString('id-ID');
+						const totalPriceColumn = row.querySelector('.total-price-box .price');
+						totalPriceColumn.textContent = formattedTotal;
+
+						// Tambahkan total harga ke total keseluruhan
+						totalHargaProduk += newTotal;
+						const itemIndex = cart.findIndex(item => item.productId === productId);
+						if (itemIndex !== -1) {
+							// Periksa apakah kuantitas berubah sebelum memanggil cekDiscountQuantity
+							if (cart[itemIndex].quantity !== newQuantity) {
+								cart[itemIndex].quantity = newQuantity;
+								// Panggil fungsi cekDiscount hanya ketika kuantitas berubah
+								cekDiscountQuantity(productId, newQuantity);
+							}
+						}
+
+						
+						// Panggil fungsi cekDiscount untuk mengecek diskon berdasarkan kuantitas baru
+					} else {
+						console.error('Invalid item price');
+					}
+				} else {
+					console.error('Invalid quantity');
+				}
+			} else {
+				console.error('Quantity input not found');
+			}
+		});
+
+		// Format total harga produk
+		const rupiahHargaProduk = 'Rp. ' + totalHargaProduk.toLocaleString('id-ID');
+
+		// Perbarui total harga produk di halaman
+		const totalProduk = document.querySelector('#totalProduk');
+		totalProduk.innerHTML = `<span>Total Harga Produk:</span> ${rupiahHargaProduk}`;
+
+		// Simpan data keranjang kembali ke localStorage
+		localStorage.setItem('cart', JSON.stringify(cart));
+	}
+
+	function cekDiscountQuantity(productId, newQuantity) {
+		const user_id = <?php echo json_encode(isset(auth()->id) && auth()->id ? auth()->id : null); ?>;
+		const token = document.querySelector('[name=_token]').value;
+
+		$.ajax({
+			url: "<?php echo routeTo('landing/cekDiscountQuantityProduk') ?>",
+			method: "POST",
+			data: {
+				_token: token,
+				user_id: user_id,
+				quantity: newQuantity,
+				productId: productId
+			},
+			success: function(response) {
+				// Mengambil data dari localStorage
+				let cartData = JSON.parse(localStorage.getItem('cart')) || [];
+
+				// Iterasi setiap produk dalam respons
+				let cartProduct = cartData.find(item => item.productId == response.data.id_product);
+				if (cartProduct) {
+					cartProduct.final_price = response.data.final_price;
+				}
+				// Menyimpan kembali data yang sudah diperbarui ke dalam localStorage
+				localStorage.setItem('cart', JSON.stringify(cartData));
+				updateCart();
+				location.reload();
 
 
 
-    $(document).on('click', '.btn-bayar', function() {
-        var total = parseInt($('.nilai-total2-td').val());
-        var bayar = parseInt($('.bayar-input').val());
-        var check_barang = parseInt($('.jumlah_barang_text').length);
-        var role_id = <?= get_role(auth()->id)->role_id ?>;
-        var customer = <?= env('CUSTOMER_ROLE_ID') ?>;
-        if (role_id != customer) {
-            if (bayar >= total) {
-                $('.nominal-error').prop('hidden', true);
-                if (check_barang != 0) {
-                    if ($('.diskon-input').attr('hidden') != 'hidden') {
-                        $('.diskon-input').addClass('is-invalid');
-                    } else {
-                        $('#transaction_form').submit();
-                    }
-                } else {
-                    swal(
-                        "",
-                        "Pesanan Kosong",
-                        "error"
-                    );
-                }
-            } else {
-                if (isNaN(bayar)) {
-                    $('.bayar-input').valid();
-                } else {
-                    $('.nominal-error').prop('hidden', false);
-                }
+			},
+			error: function(xhr, status, error) {
+				console.error(`Error: ${error}`);
+			}
+		});
+	}
 
-                if (check_barang == 0) {
-                    swal(
-                        "",
-                        "Pesanan Kosong",
-                        "error"
-                    );
-                }
-            }
-        } else {
-            if (check_barang != 0) {
-                if ($('.diskon-input').attr('hidden') != 'hidden') {
-                    $('.diskon-input').addClass('is-invalid');
-                } else {
-                    $('#transaction_form').submit();
-                }
-            } else {
-                swal(
-                    "",
-                    "Pesanan Kosong",
-                    "error"
-                );
-            }
-        }
-    });
 </script>

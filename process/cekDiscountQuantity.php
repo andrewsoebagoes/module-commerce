@@ -1,12 +1,14 @@
 <?php 
 
 use Core\Database;
+use Core\Response;
 
 $db = new Database();
 extract($_POST);
 
-$user_id = $user_id == '' ? 0 : $user_id;
-$quantity = isset($_POST['quantity']) ? $_POST['quantity'] : 1;
+$user_id = isset($_POST['user_id']) ? $_POST['user_id'] : null;
+
+
 
 $db->query = "SELECT products.id id_product, products.sku, COALESCE(product_prices.price, products.price), products.description, inventory_items.name AS product_name, discounts.discount_value, discount_user.discount_value AS user_discount_value,
 CASE WHEN discount_user.discount_value IS NOT NULL 
@@ -21,38 +23,9 @@ LEFT JOIN inventory_items ON products.item_id = inventory_items.id
 LEFT JOIN discounts ON discounts.id = product_discount.discount_id 
 LEFT JOIN discount_applicables ON discount_applicables.user_id = $user_id
 LEFT JOIN discounts as discount_user ON discount_user.id = discount_applicables.discount_id
-AND products.status = 'PUBLISH'";
+WHERE products.id = '$productId'";
 
-$discount = $db->exec('all');
-
-// echo '<pre>';
+$discount = $db->exec('single');
 // print_r($discount);
-// die();
+Response::json($discount, 'data diskon');
 
-
-foreach ($discount as $product){
-       echo ' <div class="col-md-3 pb-3">
-       <div class="produk list-group-item justify-content-between align-items-center active-list">
-            <div class="col-md-6 col-sm-4 text-group">
-            <p class="m-0" id="namaProduk">'.$product->product_name .'</p>
-            <p class="m-0 txt-light" id="hargaProduk">Rp. '.number_format($product->final_price) .'</p>
-            </div>
-
-            <div class="col-md-3 col-sm-4 d-flex align-items-center">
-                <span class=""><i class="mdi mdi-cube-outline"></i></span>
-                <p class="m-0" style="font-size:10px">'.$product->sku .'</p>
-            </div>
-         
-            <a href="javascript:;" id="addCart-'.$product->id_product.'" class="addtocart col-md-1 col-sm-12 btn btn-icons btn-rounded btn-outline-primary font-weight-bold btn-pilih"><i class="mdi mdi-chevron-right"></i></a>
-   
-            </div>
-    </div>
-    </div>';
-}
-
-
-
-
-
-
-?>
