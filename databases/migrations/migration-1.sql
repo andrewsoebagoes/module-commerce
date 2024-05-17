@@ -2,7 +2,7 @@ CREATE TABLE products(
     id INT AUTO_INCREMENT PRIMARY KEY,
     item_id INT NOT NULL,
     parent_id INT NULL,
-    sku INT NOT NULL,
+    sku VARCHAR(100) NOT NULL,
     price INT NOT NULL,
     status VARCHAR(100) NOT NULL,
     description TEXT NOT NULL,
@@ -81,9 +81,9 @@ CREATE TABLE invoice_media(
     id INT AUTO_INCREMENT PRIMARY KEY,
     invoice_id INT NOT NULL,
     media_id INT NOT NULL,
-    status VARCHAR(100) NULL,
+    status VARCHAR(100) NOT NULL,
     CONSTRAINT fk_invoice_media_invoice_id FOREIGN KEY (invoice_id) REFERENCES invoices(id) ON DELETE CASCADE,
-    CONSTRAINT fk_invoice_media_id FOREIGN KEY (media_id) REFERENCES storage_media(id) ON DELETE CASCADE
+    CONSTRAINT fk_invoice_media_id FOREIGN KEY (media_id) REFERENCES media(id) ON DELETE CASCADE
 );
 
 
@@ -97,5 +97,14 @@ CREATE TABLE shippings(
     courier VARCHAR(100) NOT NULL,
     notes VARCHAR(100) NOT NULL,
     CONSTRAINT fk_shippings_invoice_id FOREIGN KEY (invoice_id) REFERENCES invoices(id) ON DELETE CASCADE
+);
+
+
+CREATE TABLE product_prices(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    product_id INT NOT NULL,
+    price INT NOT NULL,
+    min_quantity INT NOT NULL,
+    CONSTRAINT fk_product_prices_product_id FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
 );
 

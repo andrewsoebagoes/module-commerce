@@ -7,7 +7,7 @@ table td img {
 
 <div class="card">
     <div class="card-header d-flex flex-grow-1 align-items-center">
-        <p class="h4 m-0">Customer</p>
+    <p class="h4 m-0"><?php get_title() ?></p>
         <div class="right-button ms-auto">
         <?= $crudRepository->additionalButtonBeforeCreate() ?>
             <?php if(is_allowed(parsePath(routeTo('commerce/create-customer')), auth()->id)): ?>

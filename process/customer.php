@@ -23,7 +23,7 @@ if(isset($_GET['draw']))
 }
 
 // page section
-$title = _ucwords(__("$module.label.$tableName"));
+$title = "Pelanggan";
 Page::setActive("$module.$tableName");
 Page::setTitle($title);
 Page::setModuleName($title);
