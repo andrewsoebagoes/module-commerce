@@ -45,10 +45,23 @@
                 </div>
             </form>
 
-            <div class="form-group row mb-2">
+            <div class="form-group row">
                 <label for="staticEmail" class="col-sm-2 col-form-label">Total Amount</label>
                 <div class="col-sm-10">
                     <span class="form-control-plaintext">Rp. <?= number_format($invoice[0]->total_amount); ?></span>
+                </div>
+            </div>
+            
+            <div class="form-group row">
+                <label for="staticEmail" class="col-sm-2 col-form-label">Alamat</label>
+                <div class="col-sm-10">
+                    <span class="form-control-plaintext"><?=$shippings->province . ', ' . $shippings->city . ', ' . $shippings->subdistrict . ', ' . $shippings->address?></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="staticEmail" class="col-sm-2 col-form-label">Catatan</label>
+                <div class="col-sm-10">
+                    <span class="form-control-plaintext"><?=$shippings->notes?></span>
                 </div>
             </div>
 

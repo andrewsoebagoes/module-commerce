@@ -40,12 +40,6 @@ invoices.total_amount,
 invoices.created_at,
 invoices.created_by,
 media.name AS image,
-shippings.country,
-shippings.province,
-shippings.city,
-shippings.courier,
-shippings.address,
-shippings.notes,
 CASE
     WHEN invoice_items.item_type = 'products' THEN inventory_items.name
     WHEN invoice_items.item_type = 'shippings' THEN shippings.courier
@@ -64,9 +58,12 @@ WHERE invoices.id = $invoice_id
 
 $invoice = $db->exec('all');
 
+$db->query = "SELECT shippings.* FROM shippings WHERE invoice_id = {$_GET['id']}";
+$shippings = $db->exec('single');
+
 
 // echo '<pre>';
-// print_r($invoice);
+// print_r($shippings);
 // die();
 
 $organizationUser = $db->single('organization_users', ['user_id' => auth()->id]);
@@ -131,4 +128,4 @@ Page::setModuleName($title);
 Page::pushFoot("<script src='" . asset('assets/crud/js/crud.js') . "'></script>");
 
 
-return view('commerce/views/detail-transaction', compact('success_msg', 'error_msg', 'invoice'));
+return view('commerce/views/detail-transaction', compact('success_msg', 'error_msg', 'invoice','shippings'));
